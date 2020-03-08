@@ -5,7 +5,7 @@ as := riscv64-unknown-elf-as
 ld := riscv64-unknown-elf-ld
 objcopy := riscv64-unknown-elf-objcopy
 gdb := gdb-multiarch
-# gdb_front := nemiver
+# gdb_front := ddd
 qemu := qemu-system-riscv32
 
 tmp_dir := tmp
@@ -14,11 +14,14 @@ src_dir := src
 scp_dir := scp
 
 libs_dir := $(src_dir)/libs
+boot_dir := $(src_dir)/boot
 
-boot_asm := $(src_dir)/boot/boot.asm
+boot_asm := $(boot_dir)/boot.asm
 boot_asm_o := $(tmp_dir)/boot.asm.o
-boot_c := $(src_dir)/boot/boot.c
+boot_c := $(boot_dir)/boot.c
 boot_c_o := $(tmp_dir)/boot.c.o
+sbi_c := $(libs_dir)/sbi.c
+sbi_c_o := $(tmp_dir)/sbi.o
 
 boot_o_list := $(boot_asm_o) $(boot_c_o)
 boot_out := $(tmp_dir)/boot.out
@@ -34,11 +37,12 @@ all :
 	mkdir $(tmp_dir) -p
 	mkdir $(bin_dir) -p
 	$(as) $(boot_asm) -o $(boot_asm_o) -march=rv32imac -mabi=ilp32
-	$(gcc) $(boot_c) -I$(libs_dir) -o $(boot_c_o) -c -g -Os -march=rv32imac -mabi=ilp32
-	$(ld) $(boot_asm_o) $(boot_c_o) -T $(link) -o $(boot_out) -m elf32lriscv
+	$(gcc) $(boot_c) -I$(libs_dir) -o $(boot_c_o) -c -g -O2 -march=rv32imac -mabi=ilp32
+	$(gcc) $(sbi_c) -I$(libs_dir) -o $(sbi_c_o) -c -g -O2 -march=rv32imac -mabi=ilp32
+	$(ld) $(boot_asm_o) $(boot_c_o) $(sbi_c_o) -T $(link) -o $(boot_out) -m elf32lriscv
 	$(objcopy) $(boot_out) $(boot_bin) -O binary
-	x-terminal-emulator --command="$(gdb) -x $(gdb_init)"
-	# $(gdb_front) -x gdbinit &
+	x-terminal-emulator --command="$(gdb) -tui -x $(gdb_init)"
+	# x-terminal-emulator --command="$(gdb_front) --debugger gdb-multiarch -x $(gdb_init)"
 	$(qemu) --machine $(machine) --nographic --bios $(opensbi) -device loader,file=$(boot_bin),addr=0x80400000 -S -s
 
 .PHONY : clean
