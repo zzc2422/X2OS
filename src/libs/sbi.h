@@ -2,18 +2,19 @@
 #define SBI_H
 
 #include <asm.h>
+#include <defs.h>
 
 static void shutdown() __attribute__((noreturn));
 
 inline static void shutdown() {
-	set_reg_from_i12bit(a7, 8);
-	ecall();
+	asm("ori a7, zero, 8");
+	asm("ecall");
 }
 
 inline static void print_char(u32 c) {
-	set_reg_from_var(a0, c);
-	set_reg_from_i12bit(a7, 1);
-	ecall();
+	asm("mv a0, %0" :: "r" (c) : "a0");
+	asm("or a7, zero, 1" ::: "a7");
+	asm("ecall" ::: ECALL_CLOBBER);
 }
 
 void print_str(const u8 str_a[]);

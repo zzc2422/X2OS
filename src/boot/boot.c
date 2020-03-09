@@ -1,11 +1,14 @@
 #include <sbi.h>
 
+static void _print_and_shutdown(const u8 str_a[]) __attribute__((noreturn));
+
+static void _print_and_shutdown(const u8 str_a[]) {
+	print_str(str_a);
+	shutdown();
+}
+
 void boot_c() __attribute__((noreturn));
 
 void boot_c() {
-	u32 sp;
-	set_var_from_reg(sp, sp);
-	print_i32_dec(-234234);
-	print_char('\n');
-	shutdown();
+	_print_and_shutdown("Exit!\n");
 }

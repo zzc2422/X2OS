@@ -5,7 +5,6 @@ as := riscv64-unknown-elf-as
 ld := riscv64-unknown-elf-ld
 objcopy := riscv64-unknown-elf-objcopy
 gdb := gdb-multiarch
-# gdb_front := ddd
 qemu := qemu-system-riscv32
 
 tmp_dir := tmp
@@ -41,8 +40,7 @@ all :
 	$(gcc) $(sbi_c) -I$(libs_dir) -o $(sbi_c_o) -c -g -O2 -march=rv32imac -mabi=ilp32
 	$(ld) $(boot_asm_o) $(boot_c_o) $(sbi_c_o) -T $(link) -o $(boot_out) -m elf32lriscv
 	$(objcopy) $(boot_out) $(boot_bin) -O binary
-	x-terminal-emulator --command="$(gdb) -tui -x $(gdb_init)"
-	# x-terminal-emulator --command="$(gdb_front) --debugger gdb-multiarch -x $(gdb_init)"
+	x-terminal-emulator --command="$(gdb) -x $(gdb_init)"
 	$(qemu) --machine $(machine) --nographic --bios $(opensbi) -device loader,file=$(boot_bin),addr=0x80400000 -S -s
 
 .PHONY : clean

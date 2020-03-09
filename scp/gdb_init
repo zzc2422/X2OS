@@ -1,5 +1,6 @@
 set architecture riscv:rv32
 file tmp/boot.out
 target remote :1234
+layout asm
 b *0x80400000
 continue
