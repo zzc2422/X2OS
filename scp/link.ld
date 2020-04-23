@@ -1,21 +1,16 @@
 OUTPUT_ARCH(riscv)
 ENTRY(_start)
 
-BASE_ADDRESS = 0x80400000;
+START_ADDRESS = 0x80400000;
 
-SECTIONS
-{
-    /* Load the kernel at this address: "." means the current address */
-    . = BASE_ADDRESS;
-    start = .;
-
-    .text : {
-        stext = .;
-        *(.text.entry)
-        *(.text .text.*)
-        . = ALIGN(4K);
-        etext = .;
-    }
-
-    PROVIDE(end = .);
+SECTIONS {
+	. = START_ADDRESS;
+	.text : {
+		tmp/boot/boot.asm.o(.text)
+		tmp/boot/boot.c.o(.text)
+		*(.text .text.*)
+	}
+	.data : {
+		*(.data)
+	}
 }
