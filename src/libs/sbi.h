@@ -4,15 +4,22 @@
 #include <asm.h>
 #include <defs.h>
 
-__attribute((always_inline)) static _Noreturn void shutdown() {
+inline static _Noreturn void shutdown() {
 	asm("la a7, 8");
 	asm("ecall");
 }
 
-__attribute((always_inline)) static void print_char(u32 c) {
-	asm("mv a0, %0" ::"r"(c) : "a0");
+inline static void print_char(u32 c) {
+	register u32 rc asm("a0") = c;
 	asm("li a7, 1" ::: "a7");
-	asm("ecall");
+	asm("ecall" ::"r"(rc));
+}
+
+inline static void set_timer(u64 next_time) {
+	register u32 timel asm("a0") = (u32)next_time;
+	register u32 timeh asm("a1") = next_time >> 32;
+	asm("li a7, 0" ::: "a7");
+	asm("ecall" ::"r"(timel), "r"(timeh));
 }
 
 void print_str(const char str_a[]);
