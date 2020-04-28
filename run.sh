@@ -10,7 +10,7 @@ gdb=gdb-multiarch
 qemu=qemu-system-riscv32
 
 archabi="-march=rv32imac -mabi=ilp32"
-option="-g -O2 -fno-builtin -Wall -nostdinc -fno-stack-protector"
+option="-g -O2 -fno-builtin -Wall -nostdinc -fno-stack-protector -fno-omit-frame-pointer"
 
 link=scp/link.ld
 gdb_init=scp/gdb_init
