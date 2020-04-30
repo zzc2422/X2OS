@@ -7,7 +7,7 @@ _Noreturn void unhandled(i32 scause, u32 sepc) {
 		print_str("not ");
 	}
 	print_str("an interrupt.\nCause: ");
-	print_u32_dec((scause << 1) >> 2, 1);
+	print_u32_dec((u32)(scause << 1) >> 1, 1);
 	print_str("\nEpc: ");
 	print_u32_hex(sepc, 8);
 	print_char('\n');

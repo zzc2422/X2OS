@@ -96,8 +96,7 @@ inter_vec_a:
 	.word	unhandled + NO_SAVE
 	.word	unhandled + NO_SAVE
 	.word	unhandled + NO_SAVE
-	# .word	timer_interrupt + SAVE
-	.word	unhandled + NO_SAVE
+	.word	timer_interrupt + SAVE
 inter_vec_endn_p:
 
 no_inter_vec_a:

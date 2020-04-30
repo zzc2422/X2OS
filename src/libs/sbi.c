@@ -10,7 +10,36 @@ void print_str(const char str_a[]) {
 	}
 }
 
+static u32 _div_10(u32 n) {
+#if 1
+	return (((u64)n + 1) * 0x66666666 - 1) >> 34;
+#else
+	return n / 10;
+#endif
+}
+
 void print_u32_dec(u32 n, u32 min_bit_amount) {
+	if (min_bit_amount > 10) {
+		min_bit_amount = 10;
+	}
+	char str_a[11];
+	char* str_p = str_a + 10;
+	*str_p = '\0';
+	do {
+		// div实际值为n / 10
+		u32 div = _div_10(n);
+		u32 mod = n - div * 10;
+		n = div;
+		min_bit_amount--;
+		str_p--;
+		*str_p = mod + '0';
+	} while (n != 0);
+	while ((i32)min_bit_amount > 0) {
+		str_p--;
+		*str_p = '0';
+		min_bit_amount--;
+	}
+	print_str(str_p);
 }
 
 void print_i32_dec(i32 n, u32 min_bit_amount) {

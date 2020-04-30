@@ -25,6 +25,7 @@ ainline static void enable_sie() {
 }
 
 _Noreturn void boot_c() {
+	print_char('\n');
 	enable_inter();
 	init_sscratch();
 	init_stvec();
