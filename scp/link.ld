@@ -1,16 +1,47 @@
 OUTPUT_ARCH(riscv)
 ENTRY(_start)
 
-START_ADDRESS = 0x80400000;
+PROVIDE(boot1_start = 0xC0000000);
 
 SECTIONS {
-	. = START_ADDRESS;
+	. = boot1_start;
+	.boot1 : {
+		tmp/boot/part1/boot1.asm.o(.text)
+		tmp/boot/part1/*(.*)
+	}
+	PROVIDE(boot2_start = .);
+	.boot2 : {
+		tmp/boot/part2/*(.*)
+	}
+	
+	. = ALIGN(4K);
+	PROVIDE(kern_text_start = .);
 	.text : {
-		tmp/boot/boot.asm.o(.text)
-		tmp/boot/boot.c.o(.text)
-		*(.text .text.*)
+		*(.text)
+	}
+	PROVIDE(kern_text_end_n = .);
+	
+	. = ALIGN(4K);
+	PROVIDE(kern_rodata_start = .);
+	.rodata : {
+		*(.rodata)
+	}
+	.got : {
+		*(.got .got.*)
+	}
+	PROVIDE(kern_rodata_end_n = .);
+	
+	. = ALIGN(4K);
+	PROVIDE(kern_stack_start = .);
+	. = kern_stack_start + 0x1000;
+	PROVIDE(kern_stack_end_n = .);
+	
+	PROVIDE(kern_data_start = .);
+	.bss : {
+		*(.bss)
 	}
 	.data : {
 		*(.data)
 	}
+	PROVIDE(kern_data_end_n = .);
 }

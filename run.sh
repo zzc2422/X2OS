@@ -2,15 +2,16 @@
 
 machine=virt
 
-gcc=riscv64-unknown-elf-gcc
-as=riscv64-unknown-elf-as
-ld=riscv64-unknown-elf-ld
-objcopy=riscv64-unknown-elf-objcopy
+gcc=riscv64-linux-gnu-gcc
+as=riscv64-linux-gnu-as
+ld=riscv64-linux-gnu-ld
+objcopy=riscv64-linux-gnu-objcopy
 gdb=gdb-multiarch
 qemu=qemu-system-riscv32
 
 archabi="-march=rv32imac -mabi=ilp32"
 option="-g -O2 -fno-builtin -Wall -nostdinc -fno-stack-protector -fno-omit-frame-pointer"
+boot_opt=$option" -fPIC"
 
 link=scp/link.ld
 gdb_init=scp/gdb_init
@@ -34,7 +35,12 @@ do
 	out_file="tmp"${src_file: 3}".o"
 	if [ $ext == "c" ]
 	then
-		$gcc $src_file -o $out_file $lib_opt -c $archabi $option
+		if [ ${src_file: 0: 15} == "src/boot/part1/" ]
+		then
+			$gcc $src_file -o $out_file $lib_opt -c $archabi $boot_opt
+		else
+			$gcc $src_file -o $out_file $lib_opt -c $archabi $option
+		fi
 	elif [ $ext == "asm" ]
 	then
 		$as $src_file -o $out_file -c $archabi

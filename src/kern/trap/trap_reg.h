@@ -15,7 +15,7 @@ typedef struct {
 } stvec_t;
 _Static_assert(sizeof(stvec_t) == sizeof(u32), "");
 
-inline static stvec_t get_stvec_by_addr(u32 addr) {
+inline static stvec_t get_mode0_stvec_by_align4_addr(u32 addr) {
 	union {
 		stvec_t stvec;
 		u32 u;
