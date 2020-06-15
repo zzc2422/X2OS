@@ -6,12 +6,12 @@ PROVIDE(boot1_start = 0xC0000000);
 SECTIONS {
 	. = boot1_start;
 	.boot1 : {
-		tmp/boot/part1/boot1.asm.o(.text)
-		tmp/boot/part1/*(.*)
+		bin/boot/part1/boot1.asm.o(.text)
+		bin/boot/part1/*(.*)
 	}
 	PROVIDE(boot2_start = .);
 	.boot2 : {
-		tmp/boot/part2/*(.*)
+		bin/boot/part2/*(.*)
 	}
 	
 	. = ALIGN(4K);

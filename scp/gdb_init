@@ -1,5 +1,5 @@
 set architecture riscv:rv32
-file tmp/os.bin
+file bin/os.bin
 target remote :1234
 layout asm
 b *0x80400000
