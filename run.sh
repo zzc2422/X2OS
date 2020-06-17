@@ -10,8 +10,9 @@ gdb=gdb-multiarch
 qemu=qemu-system-riscv32
 
 archabi="-march=rv32imac -mabi=ilp32"
-option="-g -O2 -fno-builtin -Wall -nostdinc -fno-stack-protector -fno-omit-frame-pointer"
-boot_opt=$option" -fPIC"
+base_opt="-O2 -fno-builtin -Wall -nostdinc -fno-stack-protector -fno-omit-frame-pointer"
+normal_opt=$base_opt" -g"
+boot_opt=$base_opt" -fPIC"
 
 link=scp/link.ld
 gdb_init=scp/gdb_init
@@ -39,7 +40,7 @@ do
 		then
 			$gcc $src_file -o $out_file $lib_opt -c $archabi $boot_opt
 		else
-			$gcc $src_file -o $out_file $lib_opt -c $archabi $option
+			$gcc $src_file -o $out_file $lib_opt -c $archabi $normal_opt
 		fi
 	elif [ $ext == "asm" ]
 	then
